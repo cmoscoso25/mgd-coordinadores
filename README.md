@@ -70,5 +70,5 @@ git clone https://github.com/cmoscoso25/mgd-coordinadores.git
 
 ![Dashboard](screenshots/dashboard.png)
 ![Evaluación](screenshots/evaluacion.png)
-![Panel](screenshots/acta.png)
+![acta](screenshots/acta.png)
 
