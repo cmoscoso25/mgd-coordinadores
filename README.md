@@ -1,38 +1,67 @@
-Hola, soy Cristian Moscoso Muñoz
-Director de Carrera de las áreas de Informática, Ciberseguridad y Telecomunicaciones, Energía y Automatización y Robótica | Desarrollador Full Stack | Especialista en Automatización & IA
+Sistema MGD Coordinadores
 
-Profesional con experiencia en desarrollo de soluciones tecnológicas para educación, automatización de procesos, analítica de datos y marketing digital.
+Sistema web desarrollado en Django para la **gestión y evaluación del desempeño de coordinadores académicos**.
 
-Especialidades
+Este sistema permite monitorear el cumplimiento de funciones administrativas, detectar brechas de gestión y apoyar la toma de decisiones basada en indicadores.
 
-✔ Desarrollo de sistemas web
-✔ Automatización de procesos
-✔ Analítica y dashboards
-✔ Integración de APIs
-✔ Marketing digital orientado a conversiones
+---
 
-Tecnologías
+Problema que resuelve
 
-Python & Django
-JavaScript & Node.js
-React
-SQLite / MongoDB
-n8n & automatización
-APIs & Web Services
-Google Ads & Analytics
-Data Analytics & Dashboards
-Proyectos Destacados
+En muchas instituciones educativas, el seguimiento del desempeño de coordinadores se realiza de forma manual o sin indicadores claros.
 
-🔹 Diagnóstico Empresarial con IA Sistema web que analiza datos empresariales y genera reportes inteligentes.
+Este sistema permite:
 
-🔹 Dashboard de Riesgo Académico Plataforma que detecta estudiantes en riesgo mediante analítica de datos.
+✔ evaluar cumplimiento de funciones  
+✔ detectar debilidades de gestión  
+✔ mejorar la supervisión académica  
+✔ apoyar decisiones directivas con datos  
 
-🔹 Automatización de Reels para Instagram Sistema automatizado con n8n para creación y publicación automática.
+---
 
-🔹 Plataforma EcomCenter Marketplace multisitio con gestión de tiendas y comisión automática.
+Funcionalidades principales
 
-🔹 Sistema Gestión de Coordinadores Aplicación Django para evaluación de desempeño académico.
+✅ Evaluación del desempeño de coordinadores  
+✅ Registro y seguimiento de funciones administrativas  
+✅ Panel de control con indicadores de cumplimiento  
+✅ Identificación de brechas de gestión  
+✅ Historial de evaluaciones  
+✅ Soporte para planes de mejora  
 
-🌎 Ubicación Chile 🇨🇱
+---
 
-📫 Contacto cmoscosom@gmail.com
+Paneles del sistema
+
+- Dashboard de cumplimiento
+- Evaluación de desempeño
+- Registro de observaciones
+- Seguimiento de mejoras
+
+---
+
+Tecnologías utilizadas
+
+- Python
+- Django
+- SQLite
+- HTML5 & CSS3
+- Bootstrap
+- JavaScript
+
+---
+
+Impacto esperado
+
+✔ Mejora de la gestión académica  
+✔ Transparencia en la evaluación del desempeño  
+✔ Identificación temprana de problemas administrativos  
+✔ Apoyo a la toma de decisiones estratégicas  
+
+---
+
+Instalación y ejecución
+
+1. Clonar el repositorio:
+
+```bash
+git clone https://github.com/cmoscoso25/mgd-coordinadores.git
