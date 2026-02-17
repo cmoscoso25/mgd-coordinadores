@@ -1,0 +1,345 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Gestión de Coordinadores | MGD Coordinadores</title>
+
+  <!-- Bootstrap 5 (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --inacap-red:#e2001a;
+      --inacap-red-dark:#b00014;
+      --ink:#111827;
+      --muted:#6b7280;
+      --bg:#f5f6f8;
+      --card:#ffffff;
+      --border:#e5e7eb;
+    }
+
+    body{
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    /* Topbar INACAP */
+    .inacap-topbar{
+      background: var(--inacap-red);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(0,0,0,.08);
+    }
+    .brand-wrap{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding: 14px 0;
+    }
+    .brand-logo{
+      width: 140px;
+      height: auto;
+      background: rgba(255,255,255,.10);
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+    .brand-title{
+      line-height: 1.1;
+    }
+    .brand-title h1{
+      font-size: 22px;
+      margin:0;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+    .brand-title small{
+      display:block;
+      opacity: .92;
+      font-weight: 600;
+      margin-top: 3px;
+    }
+
+    /* Cards */
+    .card-soft{
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card);
+      box-shadow: 0 10px 26px rgba(17,24,39,.06);
+    }
+
+    /* Table */
+    .table thead th{
+      background: #fafafa;
+      border-bottom: 1px solid var(--border);
+      font-weight: 800;
+      color: #111827;
+      white-space: nowrap;
+    }
+    .table td{
+      vertical-align: middle;
+    }
+    .table-hover tbody tr:hover{
+      background: #fbfbfd;
+    }
+
+    /* Badge NIVEL */
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 13px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .pill i{ font-size: 14px; }
+
+    .pill-azul{ background:#e6f4ff; color:#0369a1; border:1px solid #bae6fd; }
+    .pill-verde{ background:#e9f7ef; color:#166534; border:1px solid #bbf7d0; }
+    .pill-amarillo{ background:#fff7ed; color:#9a3412; border:1px solid #fed7aa; }
+    .pill-rojo{ background:#fee2e2; color:#991b1b; border:1px solid #fecaca; }
+    .pill-gris{ background:#f3f4f6; color:#374151; border:1px solid #e5e7eb; }
+
+    /* Buttons */
+    .btn-inacap{
+      background: var(--inacap-red);
+      border-color: var(--inacap-red);
+      font-weight: 800;
+    }
+    .btn-inacap:hover{
+      background: var(--inacap-red-dark);
+      border-color: var(--inacap-red-dark);
+    }
+    .btn-ghost{
+      background:#fff;
+      border:1px solid var(--border);
+      font-weight: 800;
+    }
+
+    .muted{
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+
+    /* Responsive table wrapper */
+    .table-wrap{
+      overflow-x:auto;
+      border-radius: 16px;
+    }
+
+    /* Footer */
+    .footer-note{
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOPBAR -->
+  <header class="inacap-topbar">
+    <div class="container">
+      <div class="brand-wrap">
+        <!-- ✅ Cambia el nombre del archivo si tu logo se llama distinto -->
+        <img class="brand-logo" src="{% static 'img/inacap_logo.png' %}" alt="INACAP" onerror="this.style.display='none'">
+
+        <div class="brand-title">
+          <h1>MGD Coordinadores</h1>
+          <small>Panel de Gestión de Coordinadores · Sede Arica</small>
+        </div>
+
+        <div class="ms-auto d-none d-md-flex align-items-center gap-3">
+          <span class="fw-bold"><i class="bi bi-shield-check me-1"></i>Gestión de Desempeño</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container my-4">
+
+    <!-- Selector -->
+    <div class="card card-soft p-3 p-md-4 mb-4">
+      <div class="row g-3 align-items-end">
+        <div class="col-12 col-md-7">
+          <div class="d-flex align-items-center gap-2">
+            <div class="fs-3">📊</div>
+            <div>
+              <h2 class="m-0 fw-black" style="font-weight:900;">Panel de Gestión de Coordinadores</h2>
+              <div class="muted">Selecciona un período para visualizar resultados y actas.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-5">
+          <form method="GET" action="{% url 'dashboard_gestion' %}">
+            <label class="form-label fw-bold">Periodo de evaluación</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+              <select class="form-select" name="periodo" onchange="this.form.submit()">
+                <option value="">-- Seleccionar --</option>
+                {% for p in periodos %}
+                  <option value="{{ p.id }}" {% if periodo_sel and p.id == periodo_sel.id %}selected{% endif %}>
+                    {{ p.name }}
+                  </option>
+                {% endfor %}
+              </select>
+              <noscript>
+                <button class="btn btn-inacap" type="submit">Ver</button>
+              </noscript>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="card card-soft p-0">
+      <div class="p-3 p-md-4 border-bottom" style="border-color: var(--border) !important;">
+        <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+          <div>
+            <div class="fw-black" style="font-weight:900;">
+              Resultados por Coordinador
+              {% if periodo_sel %}
+                <span class="muted">· {{ periodo_sel.name }}</span>
+              {% endif %}
+            </div>
+            <div class="footer-note">
+              Los enlaces permiten acceder a la evaluación y generar acta (HTML / PDF).
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            {% if periodo_sel %}
+              <a class="btn btn-ghost btn-sm" href="{% url 'dashboard_gestion' %}?periodo={{ periodo_sel.id }}">
+                <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+              </a>
+            {% else %}
+              <button class="btn btn-ghost btn-sm" disabled>
+                <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+              </button>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table table-hover m-0">
+          <thead>
+            <tr>
+              <th style="min-width: 280px;">Coordinador</th>
+              <th style="min-width: 170px;">Resultado (1–5)</th>
+              <th style="min-width: 190px;">Equivalente (0–120)</th>
+              <th style="min-width: 160px;">Nivel</th>
+              <th style="min-width: 330px;">Acción</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% if filas %}
+              {% for f in filas %}
+                <tr>
+                  <td class="fw-semibold">{{ f.coordinador.nombre_completo }}</td>
+
+                  <td>
+                    {% if f.score != None %}
+                      <span class="fw-bold">{{ f.score|floatformat:2 }}</span>
+                    {% else %}
+                      <span class="muted">—</span>
+                    {% endif %}
+                  </td>
+
+                  <td>
+                    {% if f.equivalente != None %}
+                      <span class="fw-bold">{{ f.equivalente|floatformat:1 }}</span>
+                    {% else %}
+                      <span class="muted">—</span>
+                    {% endif %}
+                  </td>
+
+                  <td>
+                    {% if f.nivel_color == "azul" %}
+                      <span class="pill pill-azul"><i class="bi bi-award"></i>{{ f.nivel }}</span>
+                    {% elif f.nivel_color == "verde" %}
+                      <span class="pill pill-verde"><i class="bi bi-check2-circle"></i>{{ f.nivel }}</span>
+                    {% elif f.nivel_color == "amarillo" %}
+                      <span class="pill pill-amarillo"><i class="bi bi-exclamation-triangle"></i>{{ f.nivel }}</span>
+                    {% elif f.nivel_color == "rojo" %}
+                      <span class="pill pill-rojo"><i class="bi bi-x-octagon"></i>{{ f.nivel }}</span>
+                    {% else %}
+                      <span class="pill pill-gris"><i class="bi bi-dash-circle"></i>{{ f.nivel }}</span>
+                    {% endif %}
+                  </td>
+
+                  <td>
+                    {% if periodo_sel %}
+                      <div class="actions">
+                        {% if f.accion and f.accion.0 == "ver" and f.evaluacion %}
+                          <a class="btn btn-outline-primary btn-sm"
+                             href="{% url 'evaluacion_detalle' f.evaluacion.id %}">
+                            <i class="bi bi-search me-1"></i>Ver evaluación
+                          </a>
+
+                          <a class="btn btn-inacap btn-sm"
+                             href="{% url 'acta_evaluacion' f.evaluacion.id %}"
+                             target="_blank">
+                            <i class="bi bi-printer me-1"></i>Imprimir acta
+                          </a>
+
+                          <a class="btn btn-outline-secondary btn-sm"
+                             href="{% url 'acta_evaluacion' f.evaluacion.id %}?format=pdf"
+                             target="_blank">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                          </a>
+
+                        {% elif f.accion and f.accion.0 == "crear" %}
+                          <a class="btn btn-warning btn-sm fw-bold"
+                             href="{% url 'crear_evaluacion' f.coordinador.id periodo_sel.id %}">
+                            <i class="bi bi-plus-circle me-1"></i>Crear evaluación
+                          </a>
+                        {% else %}
+                          <span class="muted">(Sin evaluación aún)</span>
+                        {% endif %}
+                      </div>
+                    {% else %}
+                      <span class="muted">Selecciona un periodo</span>
+                    {% endif %}
+                  </td>
+
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="5" class="p-4">
+                  <div class="muted fw-semibold">No hay coordinadores activos.</div>
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+
+    <div class="mt-3 footer-note">
+      <span class="fw-bold">INACAP · Sede Arica</span> · MGD Coordinadores · Versión interna
+    </div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

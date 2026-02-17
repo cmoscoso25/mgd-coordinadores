@@ -1,0 +1,212 @@
+{% load extras %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Acta Evaluación Coordinador</title>
+
+  <style>
+    @page { size: letter; margin: 12mm; }
+
+    body { font-family: Arial, sans-serif; margin: 24px; color:#000; }
+
+    .header {
+      border: 1px solid #000;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+    }
+
+    .header-top {
+      display:flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .header-title h1 { margin: 0; font-size: 20px; }
+    .header-title .sub { font-size: 14px; margin-top: 4px; }
+
+    .header-box {
+      text-align: right;
+      font-size: 13px;
+      line-height: 1.4;
+      min-width: 240px;
+    }
+
+    h2 { font-size: 16px; margin-top: 18px; }
+
+    table { width:100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border:1px solid #ddd; padding: 10px; vertical-align: top; font-size: 13px; }
+    th { background:#f3f3f3; }
+
+    .badge { display:inline-block; padding:4px 10px; border-radius:14px; font-weight:700; font-size:13px; color:#fff; }
+    .rojo { background:#d32f2f; }
+    .amarillo { background:#f4b400; color:#111; }
+    .verde { background:#1aa34a; }
+    .azul { background:#039be5; }
+    .gris { background:#6c757d; }
+
+    .acciones { margin-bottom: 14px; display:flex; gap:10px; flex-wrap: wrap; }
+    .btn {
+      padding:10px 14px;
+      border:1px solid #111;
+      border-radius:10px;
+      background:#fff;
+      font-weight:800;
+      cursor:pointer;
+      text-decoration:none;
+      color:#111;
+      font-size: 14px;
+    }
+
+    .firmas {
+      margin-top: 50px;
+      display:flex;
+      justify-content: space-between;
+      text-align: center;
+      gap: 20px;
+    }
+    .firma-linea {
+      width: 300px;
+      border-top: 1px solid #000;
+      margin-top: 40px;
+      padding-top: 6px;
+      font-size: 13px;
+    }
+
+    @media print {
+      .acciones { display:none; }
+      body { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="acciones">
+    <button class="btn" onclick="window.print()">🖨️ Imprimir</button>
+    <a class="btn" href="{% url 'acta_evaluacion' evaluacion.id %}?format=pdf" target="_blank">📄 Exportar PDF</a>
+    <a class="btn" href="{% url 'evaluacion_detalle' evaluacion.id %}">⬅ Volver a Evaluación</a>
+    <a class="btn" href="{% url 'dashboard_gestion' %}?periodo={{ periodo.id }}">⬅ Dashboard</a>
+  </div>
+
+  <!-- ENCABEZADO OFICIAL -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-title">
+        <h1>Evaluación de Desempeño Coordinador 2025</h1>
+        <div class="sub"><b>Instituto Profesional INACAP — Sede Arica</b></div>
+      </div>
+
+      <div class="header-box">
+        <div><b>N° Acta:</b> {{ numero_acta }}</div>
+        <div><b>Fecha de firma:</b> {{ fecha_firma|date:"d-m-Y" }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATOS -->
+  <table>
+    <tr>
+      <th style="width: 30%;">Coordinador evaluado</th>
+      <td>{{ coordinador.nombre_completo }}</td>
+    </tr>
+    <tr>
+      <th>Periodo</th>
+      <td>{{ periodo.name }}</td>
+    </tr>
+    <tr>
+      <th>Fecha evaluación</th>
+      <td>{{ evaluacion.fecha_creacion|date:"d-m-Y H:i" }}</td>
+    </tr>
+    <tr>
+      <th>Resultado (1–5)</th>
+      <td>{% if score != None %}{{ score|floatformat:2 }}{% else %}—{% endif %}</td>
+    </tr>
+    <tr>
+      <th>Equivalente (0–120)</th>
+      <td>{% if equivalente != None %}{{ equivalente|floatformat:1 }}{% else %}—{% endif %}</td>
+    </tr>
+    <tr>
+      <th>Nivel</th>
+      <td>
+        {% if nivel_color == "rojo" %}<span class="badge rojo">{{ nivel }}</span>
+        {% elif nivel_color == "amarillo" %}<span class="badge amarillo">{{ nivel }}</span>
+        {% elif nivel_color == "verde" %}<span class="badge verde">{{ nivel }}</span>
+        {% elif nivel_color == "azul" %}<span class="badge azul">{{ nivel }}</span>
+        {% else %}<span class="badge gris">{{ nivel }}</span>
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+
+  <h2>Conductas Sello</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Conducta</th>
+        <th style="width: 110px;">Ponderación</th>
+        <th style="width: 140px;">Cumplimiento</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in conductas %}
+        {% with r=resp_conductas|get_item:c.id %}
+        <tr>
+          <td>{{ c.conducta }}</td>
+          <td>{{ c.ponderacion }}%</td>
+          <td>{% if r %}{{ r.cumplimiento }}{% else %}—{% endif %}</td>
+        </tr>
+        {% endwith %}
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Objetivos de Gestión</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Objetivo</th>
+        <th style="width: 110px;">Ponderación</th>
+        <th style="width: 140px;">Cumplimiento</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for o in objetivos %}
+        {% with r=resp_objetivos|get_item:o.id %}
+        <tr>
+          <td>{{ o.objetivo }}</td>
+          <td>{{ o.ponderacion }}%</td>
+          <td>{% if r %}{{ r.cumplimiento }}{% else %}—{% endif %}</td>
+        </tr>
+        {% endwith %}
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Comentarios</h2>
+  <table>
+    <tr><th style="width:30%;">Fortalezas</th><td>{{ evaluacion.fortalezas|default:"—" }}</td></tr>
+    <tr><th>Oportunidades de mejora</th><td>{{ evaluacion.oportunidades_mejora|default:"—" }}</td></tr>
+    <tr><th>Resumen</th><td>{{ evaluacion.resumen_comentarios|default:"—" }}</td></tr>
+    <tr><th>Retroalimentación</th><td>{{ evaluacion.retroalimentacion|default:"—" }}</td></tr>
+  </table>
+
+  <!-- FIRMAS -->
+  <div class="firmas">
+    <div>
+      <div class="firma-linea"></div>
+      <b>Cristian Moscoso Muñoz</b><br>
+      Director de Carrera<br>
+      INACAP Sede Arica
+    </div>
+
+    <div>
+      <div class="firma-linea"></div>
+      <b>{{ coordinador.nombre_completo }}</b><br>
+      Coordinador(a) de Carrera
+    </div>
+  </div>
+
+</body>
+</html>

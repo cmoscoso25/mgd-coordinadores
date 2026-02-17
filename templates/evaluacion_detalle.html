@@ -1,0 +1,199 @@
+{% load extras %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Detalle de Evaluación</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    h1 { font-size: 56px; margin: 0 0 18px 0; }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 18px;
+      margin: 18px 0;
+      background: #fff;
+    }
+    .meta b { display:inline-block; min-width: 160px; }
+    .btn {
+      display:inline-block;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid #111;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      background: #fff;
+      font-size: 18px;
+    }
+    .btn-primary { border-color: #4b2bd6; color:#4b2bd6; }
+    .btn-danger { border-color: #c62828; color:#c62828; }
+    .btn-info { border-color:#0b5ed7; color:#0b5ed7; }
+    .btn:disabled { opacity: .6; cursor: not-allowed; }
+    table { width:100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border:1px solid #ddd; padding: 10px; vertical-align: top; }
+    th { background:#f3f3f3; font-size: 18px; }
+    td { font-size: 16px; }
+    select, textarea { width: 100%; padding: 8px; font-size: 16px; }
+    .muted { color:#666; }
+    .top-actions { display:flex; gap:12px; flex-wrap: wrap; }
+    .badge {
+      display:inline-block; padding:4px 10px; border-radius:14px;
+      font-weight:800; font-size:14px; color:#fff;
+    }
+    .verde { background:#1aa34a; }
+    .amarillo { background:#f4b400; color:#111; }
+    .rojo { background:#d93025; }
+    .azul { background:#039be5; }
+    .gris { background:#6c757d; }
+  </style>
+</head>
+<body>
+
+  <h1>Detalle de Evaluación</h1>
+
+  <div class="card meta">
+    <p><b>Coordinador:</b> {{ coordinador.nombre_completo }}</p>
+    <p><b>Periodo:</b> {{ periodo.name }}</p>
+    <p><b>Fecha creación:</b> {{ evaluacion.fecha_creacion }}</p>
+    <p><b>Cerrada:</b> {{ evaluacion.cerrada }}</p>
+    <p><b>Score total:</b>
+      {% if score != None %}
+        {{ score|floatformat:2 }}
+      {% else %}
+        <span class="muted">—</span>
+      {% endif %}
+      &nbsp;&nbsp;
+      <span class="badge {{ badge }}">{{ nivel }}</span>
+    </p>
+  </div>
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="card">
+      <h2>Conductas Sello</h2>
+      <p class="muted">Selecciona un valor de 1 a 5. (Se guarda en <b>cumplimiento</b>)</p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:35%;">Conducta</th>
+            <th>Descripción / Nivel esperado</th>
+            <th style="width:140px;">Cumplimiento</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in conductas %}
+            {% with resp=resp_conductas|get_item:c.id %}
+            <tr>
+              <td>
+                <b>{{ c.conducta }}</b><br>
+                <span class="muted">Ponderación: {{ c.ponderacion }}%</span>
+              </td>
+              <td>
+                {% if c.descripcion %}<div><b>Descripción:</b> {{ c.descripcion }}</div>{% endif %}
+                {% if c.nivel_esperado %}<div><b>Nivel esperado:</b> {{ c.nivel_esperado }}</div>{% endif %}
+              </td>
+              <td>
+                <select name="conducta_{{ c.id }}" {% if evaluacion.cerrada %}disabled{% endif %}>
+                  <option value="">—</option>
+                  {% for n in "12345" %}
+                    <option value="{{ forloop.counter }}"
+                      {% if resp and resp.cumplimiento == forloop.counter|stringformat:"s" %}selected{% endif %}>
+                      {{ forloop.counter }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+            {% endwith %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Objetivos</h2>
+      <p class="muted">Selecciona un valor de 1 a 5. (Se guarda en <b>cumplimiento</b>)</p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:35%;">Objetivo</th>
+            <th>Detalle</th>
+            <th style="width:140px;">Cumplimiento</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for o in objetivos %}
+            {% with resp=resp_objetivos|get_item:o.id %}
+            <tr>
+              <td>
+                <b>{{ o.objetivo }}</b><br>
+                <span class="muted">Eje: {{ o.eje_estrategico }}</span><br>
+                <span class="muted">Ponderación: {{ o.ponderacion }}%</span>
+              </td>
+              <td>
+                {% if o.indicador %}<div><b>Indicador:</b> {{ o.indicador }}</div>{% endif %}
+                {% if o.nivel_esperado %}<div><b>Nivel esperado:</b> {{ o.nivel_esperado }}</div>{% endif %}
+              </td>
+              <td>
+                <select name="objetivo_{{ o.id }}" {% if evaluacion.cerrada %}disabled{% endif %}>
+                  <option value="">—</option>
+                  {% for n in "12345" %}
+                    <option value="{{ forloop.counter }}"
+                      {% if resp and resp.cumplimiento == forloop.counter|stringformat:"s" %}selected{% endif %}>
+                      {{ forloop.counter }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+            {% endwith %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Comentarios finales</h2>
+
+      <label><b>Fortalezas</b></label>
+      <textarea name="fortalezas" rows="3" {% if evaluacion.cerrada %}disabled{% endif %}>{{ evaluacion.fortalezas }}</textarea>
+
+      <br><br>
+
+      <label><b>Oportunidades de mejora</b></label>
+      <textarea name="oportunidades_mejora" rows="3" {% if evaluacion.cerrada %}disabled{% endif %}>{{ evaluacion.oportunidades_mejora }}</textarea>
+
+      <br><br>
+
+      <label><b>Resumen comentarios</b></label>
+      <textarea name="resumen_comentarios" rows="3" {% if evaluacion.cerrada %}disabled{% endif %}>{{ evaluacion.resumen_comentarios }}</textarea>
+
+      <br><br>
+
+      <label><b>Retroalimentación</b></label>
+      <textarea name="retroalimentacion" rows="3" {% if evaluacion.cerrada %}disabled{% endif %}>{{ evaluacion.retroalimentacion }}</textarea>
+    </div>
+
+    <div class="top-actions">
+      <a class="btn" href="{% url 'dashboard_gestion' %}?periodo={{ periodo.id }}">⬅ Volver al Dashboard</a>
+
+      <!-- ✅ NUEVO: Imprimir Acta -->
+      <a class="btn btn-info" href="{% url 'acta_evaluacion' evaluacion.id %}" target="_blank">🖨 Imprimir Acta</a>
+
+      {% if not evaluacion.cerrada %}
+        <button type="submit" class="btn btn-primary">💾 Guardar</button>
+        <button type="submit" name="accion" value="cerrar" class="btn btn-danger"
+                onclick="return confirm('¿Seguro que deseas CERRAR la evaluación? Después no podrás editarla.');">
+          🔒 Cerrar evaluación
+        </button>
+      {% else %}
+        <span class="muted"><b>Esta evaluación está cerrada.</b></span>
+      {% endif %}
+    </div>
+
+  </form>
+
+</body>
+</html>
