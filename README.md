@@ -65,3 +65,10 @@ Instalación y ejecución
 
 ```bash
 git clone https://github.com/cmoscoso25/mgd-coordinadores.git
+
+## 📸 Capturas del sistema
+
+![Dashboard](screenshots/dashboard.png)
+![Evaluación](screenshots/evaluacion.png)
+![Panel](screenshots/acta.png)
+
